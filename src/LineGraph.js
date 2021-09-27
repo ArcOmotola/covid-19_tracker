@@ -48,7 +48,7 @@ const buildChartData = (data, casesType = "cases") => {
     let lastDataPoint;
     for (let date in data.cases) {
         if (lastDataPoint) {
-            const newDataPoint = {
+            let newDataPoint = {
                 x: date,                                                    // ...HELPER FUNCTION
                 y: data[casesType][date] - lastDataPoint,                  // mathematical operation to find difference between
             };                                                            // number of cases between two consecutive days to determine y-axis value
@@ -79,7 +79,6 @@ export default function LineGraph({casesType = "cases"}) {                // def
 
     return (
         <div>
-            {/* <h1>Im just a graph</h1> */}
                 {data?.length > 0 && (
                     <Line 
                         options={options}

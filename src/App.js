@@ -4,7 +4,8 @@ import InfoBox from './InfoBox';
 import Map from './Map';
 import Table from './Table';
 import LineGraph from './LineGraph';
-import { sortData } from './util';
+import "leaflet/dist/leaflet.css";
+import { sortData } from './util';                             //helper function to sort no of cases in descending order
 import './App.css';
 
 
@@ -13,6 +14,8 @@ function App() {
   const [country, setCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
+  const [mapZoom, setMapZoom] = useState(3);
 
   useEffect(() => {                                                 //fetches data for Worldwide when component first mounts
     fetch("https://disease.sh/v3/covid-19/all")
@@ -40,7 +43,7 @@ function App() {
         
       })
     }
-    console.log(countries)
+    // console.log(countries)
     getCountriesData();
   }, []);
 
@@ -58,10 +61,18 @@ function App() {
     .then(data => {
       setCountry(countryCode);
       setCountryInfo(data);
+      setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+      setMapZoom(4);
     })
+    
   }
 
-  console.log("country info>>>", countryInfo);
+  // console.log("CURRENT MAP CENTER>>>", mapCenter, countryInfo.country);
+  console.log("CURRENT COUNTRY>>>", country);
+  console.log("SELECT COUNTRY INFO>>>", countryInfo);
+  // console.log("TABULAR CASES BY COUNTRY>>>", tableData); 
+  // console.log("ZOOM-CURRENT>>>", mapZoom);
+  
 
   return (
     <div className="app">
@@ -84,7 +95,10 @@ function App() {
           <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths}/>
         </div>
 
-        <Map />
+        <Map 
+          center={mapCenter}
+          zoom={mapZoom}
+        />
       </div>
       
       <Card className="app__right">
