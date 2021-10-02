@@ -5,7 +5,7 @@ import Map from './Map';
 import Table from './Table';
 import LineGraph from './LineGraph';
 import "leaflet/dist/leaflet.css";
-import { sortData } from './util';                             //helper function to sort no of cases in descending order
+import { prettyPrintStat, sortData } from './util';                             //helper function to sort no of cases in descending order
 import './App.css';
 
 
@@ -16,6 +16,7 @@ function App() {
   const [tableData, setTableData] = useState([]);
   const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
   const [mapZoom, setMapZoom] = useState(3);
+  const [mapCountries, setMapCountries] = useState([]);
 
   useEffect(() => {                                                 //fetches data for Worldwide when component first mounts
     fetch("https://disease.sh/v3/covid-19/all")
@@ -32,18 +33,20 @@ function App() {
       .then((data) => {
         const countries = data.map((country) => (
           {
-            name: country.country,
-            value: country.countryInfo.iso2
+            name: country.country,                //e.g United States
+            value: country.countryInfo.iso2       //US
           }
         ));
         
         const sortedData = sortData(data)
         setTableData(sortedData);
+        setMapCountries(data);
         setCountries(countries);
         
       })
     }
-    // console.log(countries)
+     console.log("available countries>>>",countries);
+     console.log("all countries info",mapCountries);
     getCountriesData();
   }, []);
 
@@ -70,7 +73,7 @@ function App() {
   // console.log("CURRENT MAP CENTER>>>", mapCenter, countryInfo.country);
   console.log("CURRENT COUNTRY>>>", country);
   console.log("SELECT COUNTRY INFO>>>", countryInfo);
-  // console.log("TABULAR CASES BY COUNTRY>>>", tableData); 
+  console.log("TABULAR CASES BY COUNTRY>>>", tableData); 
   // console.log("ZOOM-CURRENT>>>", mapZoom);
   
 
@@ -90,12 +93,13 @@ function App() {
         </div>
   
         <div className="app__stats">
-          <InfoBox title="Coronavirus Cases" cases={countryInfo.todayCases} total={countryInfo.cases} />
-          <InfoBox title="Recovered" cases={countryInfo.todayRecovered} total={countryInfo.recovered}/>
-          <InfoBox title="Deaths" cases={countryInfo.todayDeaths} total={countryInfo.deaths}/>
+          <InfoBox title="Coronavirus Cases" cases={prettyPrintStat(countryInfo.todayCases)} total={prettyPrintStat(countryInfo.cases)} />
+          <InfoBox title="Recovered" cases={prettyPrintStat(countryInfo.todayRecovered)} total={prettyPrintStat(countryInfo.recovered)}/>
+          <InfoBox title="Deaths" cases={prettyPrintStat(countryInfo.todayDeaths)} total={prettyPrintStat(countryInfo.deaths)}/>
         </div>
 
         <Map 
+          countries={mapCountries}
           center={mapCenter}
           zoom={mapZoom}
         />
