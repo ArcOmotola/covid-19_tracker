@@ -6,7 +6,7 @@ import { showDataOnMap } from './util';
 
 
 export default function Map({center, zoom, countries, casesType}) {
-    
+    console.log("final casesType>>",casesType);
     function ChangeView({ center, zoom }) {
         const map = useMap();
         map.setView(center, zoom);

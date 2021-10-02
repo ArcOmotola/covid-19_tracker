@@ -33,13 +33,15 @@ export const sortData = (data) => {     // sorts data from api according to numb
 
 export const prettyPrintStat = (stat) => stat ? `+${numeral(stat).format("0.0a")}` : "+0";
 
-export const showDataOnMap = (data, casesType="cases") => (         //draw interactive circles on map
+
+
+export const showDataOnMap = (data, casesType) => (         //draw interactive circles on map
     data.map(country => (
         <Circle
             center={[country.countryInfo.lat, country.countryInfo.long]}
             fillOpacity={0.4}
-            color={casesTypeColors[casesType].hex}
-            fillColor={casesTypeColors[casesType].hex}
+            pathOptions={{color: casesTypeColors[casesType].hex,
+            fillColor: casesTypeColors[casesType].hex }}
             radius={Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier}
         >
             <Popup>
